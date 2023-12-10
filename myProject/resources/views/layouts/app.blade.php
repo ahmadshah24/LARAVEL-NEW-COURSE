@@ -7,10 +7,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
     <title>Laravel 10 task List App</title>
+    @yield('styles')
 </head>
 <body>
     <h1>@yield('title')</h1>
     <div>
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         @yield('content')
 
     </div>

@@ -1,7 +1,10 @@
 <?php
 
+
+use App\Models\Task;
 use Illuminate\Http\Response;
-use Illuminate\Http\Request;
+
+use App\Http\Requests\TaskRequest;
 
 
 use Illuminate\Support\Facades\Route;
@@ -81,16 +84,21 @@ use Illuminate\Support\Facades\Route;
 
     Route::get('/tasks', function (){
         return view('index', [
-            // 'tasks' => \App\Models\Task::all()
+            'tasks' => \App\Models\Task::all()
             // 'tasks' => \App\Models\Task::latest()->get() // will only get the latest records
-            'tasks' => \App\Models\Task::latest()->where('completed', true)->get() // will only get the records with completed 
+            // 'tasks' => \App\Models\Task::latest()->where('completed', true)->get() // will only get the records with completed 
             
             
         ]);
     })->name('tasks.index');
 
     Route::view('tasks/create', 'create')->name('tasks.create');
-    Route::get('/tasks/{id}', function ($id){
+
+    Route::get('/tasks/{task}/edit', function (Task $task){
+        return view('edit', ['task' => $task]);
+    })->name('tasks.edit');
+
+    Route::get('/tasks/{task}', function (Task $task){
         // return 'only single tasks';
         // $task = collect($tasks)->firstWhere('id',$id);
         
@@ -100,12 +108,46 @@ use Illuminate\Support\Facades\Route;
         // }
 
         // return view('show', ['task' => \App\Models\Task::find($id)]);
-        return view('show', ['task' => \App\Models\Task::findOrFail($id)]);
+        // return view('show', ['task' => Task::findOrFail($id)]);
+        return view('show', ['task' => $task]);
+        
     })->name('tasks.show');
 
-    Route::post('/tasks', function(Request $request){
-      dd($request->all());
+    Route::post('/tasks', function(TaskRequest $request){
+    //   dd($request->all());
+        // $data = $request->validated();
+
+        // $task = new Task;
+
+        // $task->title = $data['title'];
+        // $task->description = $data['description'];
+        // $task->long_description = $data['long_description'];
+
+        // $task->save();
+            $task -> Task::create($request->validated());
+        // session()->flash('success', 'Task created successfully');
+
+        // Error message
+        // session()->flash('error', 'Oops! Something went wrong.');
+        // return redirect()->route('tasks.show', ['id' => $task->id]);
+        return redirect()->route('tasks.show', ['id' => $task->id])->with('success', 'Task created successfully');;
+        
     })->name('tasks.store');
+
+    Route::put('/tasks/{task}', function(Task $task, TaskRequest $request){
+        //   dd($request->all());
+            
+    
+            // $task = $task;
+            // $data = $request->validated();
+            // $task->title = $data['title'];
+            // $task->description = $data['description'];
+            // $task->long_description = $data['long_description'];
+            // $task->save();
+            $task->update($request->validated());
+
+            return redirect()->route('tasks.show', ['task' => $task->id])->with('success', 'Task edited successfully');;
+        })->name('tasks.update');
 // Route::get('hello', function () {
 //     return 'hello';
 // })->name('hello');
@@ -126,6 +168,5 @@ use Illuminate\Support\Facades\Route;
 Route::fallback(function () {
     return 'the route you are looking for is not found';
 });
-
 
 

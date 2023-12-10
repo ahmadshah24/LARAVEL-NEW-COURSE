@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Add Task')
+@section('title', 'Edit Task')
 @section('styles')
 <style>
     body{
-        background: green;
+        background: lightcoral;
     }
     .error-message{
         color: red;
@@ -12,16 +12,16 @@
 </style>
 @endsection
 @section('content')
-    <form action="{{route('tasks.store')}}" method="POST">
+    <form action="{{route('tasks.update', ['task' => $task->id])}}" method="POST">
         
-        {{-- {{$errors}} --}}
         @csrf
+        @method('PUT')
 
         <div class="container col-md-4" >
 
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" name="title" id="title" value="{{old('title')}}" >
+                <input type="text" class="form-control" name="title" id="title" value="{{$task->title}}" >
                 @error('title')
                     <p class="error-message">{{$message}}</p>
                 @enderror
@@ -30,7 +30,7 @@
             
             <div class="form-group">
                 <label for="description">Description</label>
-                <input type="text" class="form-control" name="description" id="description" value="{{old('description')}}">
+                <input type="text" class="form-control" name="description" id="description" value="{{$task->description}}" >
                 @error('description')
                     <p class="error-message">{{$message}}</p>
                 @enderror
@@ -39,14 +39,16 @@
             
             <div class="form-group">
                 <label for="long_description">Long Description</label>
-                <textarea class="form-control" name="long_description" id="long_description" rows="4" >{{old('long_description')}}</textarea>
+                <textarea class="form-control" name="long_description" id="long_description" rows="4" >
+                    {{$task->long_description}}
+                </textarea>
                 @error('long_description')
                     <p class="error-message">{{$message}}</p>
                 @enderror
             </div>
             
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Add Task</button>
+                <button type="submit" class="btn btn-primary">Eidt Task</button>
             </div>
         </div>
             
