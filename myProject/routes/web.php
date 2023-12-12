@@ -84,7 +84,10 @@ use Illuminate\Support\Facades\Route;
 
     Route::get('/tasks', function (){
         return view('index', [
-            'tasks' => \App\Models\Task::all()
+            // 'tasks' => Task::latest()->paginate()
+             //it will create a pagination for us
+             'tasks' => Task::latest()->paginate(10) // this will just show 10 items of the list
+            
             // 'tasks' => \App\Models\Task::latest()->get() // will only get the latest records
             // 'tasks' => \App\Models\Task::latest()->where('completed', true)->get() // will only get the records with completed 
             
@@ -115,7 +118,7 @@ use Illuminate\Support\Facades\Route;
 
     Route::post('/tasks', function(TaskRequest $request){
     //   dd($request->all());
-        // $data = $request->validated();
+        $data = $request->validated();
 
         // $task = new Task;
 
@@ -124,13 +127,13 @@ use Illuminate\Support\Facades\Route;
         // $task->long_description = $data['long_description'];
 
         // $task->save();
-            $task -> Task::create($request->validated());
+            $task = Task::create($request->validated());
         // session()->flash('success', 'Task created successfully');
 
         // Error message
         // session()->flash('error', 'Oops! Something went wrong.');
         // return redirect()->route('tasks.show', ['id' => $task->id]);
-        return redirect()->route('tasks.show', ['id' => $task->id])->with('success', 'Task created successfully');;
+        return redirect()->route('tasks.show', ['task' => $task->id])->with('success', 'Task created successfully');;
         
     })->name('tasks.store');
 
@@ -148,6 +151,12 @@ use Illuminate\Support\Facades\Route;
 
             return redirect()->route('tasks.show', ['task' => $task->id])->with('success', 'Task edited successfully');;
         })->name('tasks.update');
+
+        Route::delete('/tasks/{task}', function(Task $task){
+                $task->delete();
+                return redirect()->route('tasks.index', ['task' => $task->id])->with('success', 'Task deleted successfully');;
+            })->name('tasks.destroy');
+
 // Route::get('hello', function () {
 //     return 'hello';
 // })->name('hello');

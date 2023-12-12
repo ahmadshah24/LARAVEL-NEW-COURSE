@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('title', $task->title)
 @section('content')
-{{-- @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif --}}
+    {{-- @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif --}}
 
 {{-- @if(session('error'))
     <div class="alert alert-danger">
@@ -23,4 +23,10 @@
 <h2>{{$task->updated_at}}</h2>
 
 <a href="{{ route('tasks.edit', ['task'=> $task->id])}}" class="btn btn-primary p-3 px-5">Edit</a>
+<form class="btn btn-danger" action="{{ route('tasks.destroy', ['task'=> $task->id])}}" method="POST">
+    @csrf
+    @method('DELETE')
+    <button type="submit">Delete</button>
+</form>
+
 @endsection

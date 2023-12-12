@@ -29,6 +29,13 @@
     @empty
         <div>There is no task</div>
     @endforelse
+        <br><br>
+    <nav>
 
+        @if($task->count())
+        {{ $tasks->links()}}
+        
+        @endif
+    </nav>
     @endsection
 {{-- </div> --}}
